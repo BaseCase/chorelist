@@ -1,3 +1,6 @@
+require 'httparty'
+
 def handler(event:, context:)
-  puts "hello"
+  response = HTTParty.get('http://example.com')
+  puts response
 end
