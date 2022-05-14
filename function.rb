@@ -20,6 +20,7 @@ Chore = Struct.new(
 Assignment = Struct.new(
   :id,
   :name,
+  :chore,
   keyword_init: true
 )
 
@@ -92,7 +93,8 @@ class Notion
       body: {
         parent: { "database_id" => RUNNING_LIST_DATABASE_ID },
         properties: {
-          "Name" => { "title" => [{ "text" => { "content" => assignment.name }}]}
+          "Name" => { "title" => [{ "text" => { "content" => assignment.name }}]},
+          "Chore" => { "relation" => [{ "id" => assignment.chore.id }]}
         }
       }.to_json
     )
