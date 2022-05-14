@@ -1,2 +1,4 @@
 vendor/
 function.zip
+.projectile
+env.secret
