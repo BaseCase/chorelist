@@ -27,16 +27,17 @@ Assignment = Struct.new(
 
 class Notion
   NOTION_API_SECRET = ENV['NOTION_API_SECRET']
-  NOTION_API_BASE = "https://api.notion.com/v1"
-  MASTER_LIST_DATABASE_ID = ENV['MASTER_LIST_DATABASE_ID']
-  MASTER_DB_URL = "#{NOTION_API_BASE}/databases/#{MASTER_LIST_DATABASE_ID}"
-  RUNNING_LIST_DATABASE_ID = ENV['RUNNING_LIST_DATABASE_ID']
-  RUNNING_DB_URL = "#{NOTION_API_BASE}/databases/#{RUNNING_LIST_DATABASE_ID}"
-  PAGES_URL = "#{NOTION_API_BASE}/pages"
+  NOTION_API_BASE_URL = "https://api.notion.com/v1"
+  PAGES_URL = "#{NOTION_API_BASE_URL}/pages"
+  CHORES_DATABASE_ID = ENV['CHORES_DATABASE_ID']
+  CHORES_DATABASE_URL = "#{NOTION_API_BASE_URL}/databases/#{CHORES_DATABASE_ID}"
+  ASSIGNMENTS_DATABASE_ID = ENV['ASSIGNMENTS_DATABASE_ID']
+  ASSIGNMENTS_DATABASE_URL = "#{NOTION_API_BASE_URL}/databases/#{ASSIGNMENTS_DATABASE_ID}"
 
-  def self.get_master_database_metadata
+
+  def self.get_chores_metadata
     response = HTTParty.get(
-      MASTER_DB_URL,
+      CHORES_DATABASE_URL,
       headers: {
         'Authorization' => "Bearer #{NOTION_API_SECRET}",
         'Notion-Version' => '2022-02-22'
@@ -45,9 +46,9 @@ class Notion
     JSON.parse response.body, symbolize_names: true
   end
 
-  def self.get_running_list_metadata
+  def self.get_assignments_metadata
     response = HTTParty.get(
-      RUNNING_DB_URL,
+      ASSIGNMENTS_DATABASE_URL,
       headers: {
         'Authorization' => "Bearer #{NOTION_API_SECRET}",
         'Notion-Version' => '2022-02-22'
@@ -56,9 +57,9 @@ class Notion
     JSON.parse response.body, symbolize_names: true
   end
 
-  def self.get_master_database_rows
+  def self.get_chores
     response = HTTParty.post(
-      "#{MASTER_DB_URL}/query",
+      "#{CHORES_DATABASE_URL}/query",
       headers: {
         'Authorization' => "Bearer #{NOTION_API_SECRET}",
         'Notion-Version' => '2022-02-22',
@@ -91,7 +92,7 @@ class Notion
         'Content-Type' => 'application/json'
       },
       body: {
-        parent: { "database_id" => RUNNING_LIST_DATABASE_ID },
+        parent: { "database_id" => ASSIGNMENTS_DATABASE_ID },
         properties: {
           "Name" => { "title" => [{ "text" => { "content" => assignment.name }}]},
           "Chore" => { "relation" => [{ "id" => assignment.chore.id }]}
