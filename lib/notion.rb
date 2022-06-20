@@ -44,8 +44,20 @@ class Notion
     JSON.parse(response.body, symbolize_names: true)
   end
 
-  def self.create_assignment(assignment_json)
-    # API call goes here
+  def self.create_assignment(assignment_hash)
+    response = HTTParty.post(
+      "#{API_BASE_URL}/pages",
+      headers: self.headers,
+      body: {
+        parent: { "database_id" => ASSIGNMENTS_DB_ID },
+        properties: assignment_hash
+      }.to_json
+    )
+
+    unless response.success?
+      puts "Error creating Assignment:"
+      puts response
+    end
   end
 
   def self.get_chores
@@ -92,7 +104,7 @@ class Notion
 
   def self.generate_new_assignments_for_chores(chores)
     chores.map(&:next_assignment).compact.each do |assignment|
-      self.create_assignment(assignment.to_json)
+      self.create_assignment(assignment.as_notion_hash)
     end
   end
 end

@@ -1,16 +1,14 @@
-require 'json'
-
 Assignment = Struct.new(:person, :due_date, :chore_id, :done, keyword_init: true) do
-  def to_json
+  def as_notion_hash
     {
       "Chore" => { "relation" => [{ "id" => chore_id }]},
       "Due" => { "date" => { "start" => due_date.iso8601 }},
       "Assignee" => {
-        "right_text" => [
+        "rich_text" => [
           { "type" => "text", "text" => { "content" => person }}
         ]
       },
       "Done" => { "checkbox" => done },
-    }.to_json
+    }
   end
 end
