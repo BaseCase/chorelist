@@ -29,14 +29,14 @@ RSpec.describe Chore do
       expect(chore.latest_assignment.due_date).to eq recent
     end
 
-    it 'makes upcoming Sunday the first due date when not given a previous Assignment' do
+    it 'makes previous Sunday the first due date when not given a previous Assignment' do
       creation_date = Date.new(2022, 06, 21)
-      the_next_sunday = Date.new(2022, 06, 26)
+      previous_sunday = Date.new(2022, 06, 19)
       allow(Date).to receive(:today).and_return creation_date
 
       chore = Chore.new(assignees: ["Casey"])
 
-      expect(chore.latest_assignment.due_date).to eq the_next_sunday
+      expect(chore.latest_assignment.due_date).to eq previous_sunday
     end
   end
 

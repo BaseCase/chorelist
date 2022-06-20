@@ -19,12 +19,12 @@ class Chore
   def latest_assignment
     if @assignments.empty?
       today = Date.today
-      days_until_next_sunday = 7 - today.wday
-      due = today + days_until_next_sunday
+      days_since_last_sunday = today.wday
+      due = today - days_since_last_sunday
       first_assignment = Assignment.new(
         person: @assignees.first,
         due_date: due,
-        done: false,
+        done: true,   # feels a little hacky to set this to true? hmm....
         chore_id: id
       )
       @assignments << first_assignment
