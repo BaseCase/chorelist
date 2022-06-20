@@ -66,9 +66,9 @@ class Notion
           done: asn_json.dig(:properties, :Done, :checkbox)
         )
       }
-      # TODO: chore name!
       Chore.new(
         id: chore_id,
+        name: row.dig(:properties, :Name, :title).first.dig(:text, :content),
         frequency: row.dig(:properties, :Frequency, :select, :name).to_sym,
         assignees: row.dig(:properties, :Assignees, :multi_select).map { |a| a[:name] },
         assignments: related_assignments,
