@@ -30,7 +30,7 @@ class Chore
       @assignments << first_assignment
     end
 
-    @assignments.sort_by(&:due_date).last
+    @assignments.max_by(&:due_date)
   end
 
   def next_assignment
