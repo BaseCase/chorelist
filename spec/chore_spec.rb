@@ -41,7 +41,8 @@ RSpec.describe Chore do
 
   describe '#next_assignment' do
     it 'rotates the assignee' do
-      chore = Chore.new(assignees: ["Casey", "Elayne"])
+      latest_assignment = Assignment.new(person: "Casey", due_date: Date.today, done: true)
+      chore = Chore.new(assignees: ["Casey", "Elayne"], assignments: [latest_assignment])
       expect(chore.latest_assignment.person).to eq "Casey"
       expect(chore.next_assignment.person).to eq "Elayne"
     end
@@ -49,11 +50,18 @@ RSpec.describe Chore do
     it 'sets the due date one week after the latest assignment' do
       today = Date.today
       one_week_later = today + 7
-      latest_assignment = Assignment.new(person: "Casey", due_date: today)
+      latest_assignment = Assignment.new(person: "Casey", due_date: today, done: true)
       chore = Chore.new(assignees: ["Casey"], assignments: [latest_assignment])
 
       expect(chore.latest_assignment.due_date).to eq today
       expect(chore.next_assignment.due_date).to eq one_week_later
+    end
+
+    it "is nil if there is no next assignment (because the latest hasn't been done yet)" do
+      latest_assignment = Assignment.new(person: "Casey", due_date: Date.today, done: false)
+      chore = Chore.new(assignees: ["Casey"], assignments: [latest_assignment])
+
+      expect(chore.next_assignment).to be_nil
     end
   end
 end
