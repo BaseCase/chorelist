@@ -1,5 +1,6 @@
 require 'date'
 require 'chore'
+require 'assignment'
 
 RSpec.describe Chore do
   it 'has a default frequency of Weekly' do

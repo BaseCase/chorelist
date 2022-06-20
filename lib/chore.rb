@@ -1,4 +1,5 @@
 require 'date'
+require_relative './assignment'
 
 class Chore
   attr_reader :id, :name, :frequency, :assignments
@@ -57,6 +58,3 @@ class Chore
     date + 7
   end
 end
-
-
-Assignment = Struct.new(:person, :due_date, :chore_id, :done, keyword_init: true)
