@@ -10,7 +10,7 @@ info on installing ruby deps in a local vendor folder [are here](https://docs.aw
 2. in project root folder:
 ```bash
 rm function.zip
-zip -r function.rb vendor/
+zip -r function.zip function.rb vendor/ lib/
 ```
 3. In the web console, click "Upload from" > "zip file"
 
