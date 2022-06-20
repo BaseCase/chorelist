@@ -9,11 +9,15 @@ class Notion
     # API call goes here
   end
 
+  def self.create_assignment(assignment_json)
+    # API call goes here
+  end
+
   def self.get_chores
     chores_json = self.fetch_chores_data
     assignments_json = self.fetch_assignments_data
 
-    chores = chores_json[:results].map do |row|
+    chores_json[:results].map do |row|
       chore_id = row[:id]
       related_assignments = assignments_json[:results].select { |a|
         a.dig(:properties, :Chore, :relation).first[:id] == chore_id
@@ -34,7 +38,26 @@ class Notion
         assignments: related_assignments,
       )
     end
+  end
 
-    chores
+  def self.log_intent_for_assignment_generation(chores)
+    chores.each do |chore|
+      print "Chore: #{chore.name}"
+      print "Due on #{chore.latest_assignment.due_date}"
+      print "Assigned to #{chore.latest_assignment.person}"
+      if chore.latest_assignment.done
+        next_assignment = chore.next_assignment
+        print "Next due on #{next_assignment.due_date}"
+        print "Assigned to #{next_assignment.person}"
+      else
+        print "Not done yet, so retaining existing assignment."
+      end
+    end
+  end
+
+  def self.generate_new_assignments_for_chores(chores)
+    chores.map(&:next_assignment).compact.each do |assignment|
+      self.create_assignment(assignment.to_json)
+    end
   end
 end

@@ -1,12 +1,15 @@
 require 'date'
 
 class Chore
-  attr_reader :id, :frequency, :assignments
+  attr_reader :id, :name, :frequency, :assignments
 
   def initialize(id: "",
+                 name: "",
                  frequency: :weekly,
                  assignees: [],
                  assignments: [])
+    @id = id
+    @name = name
     @frequency = frequency
     @assignees = assignees
     @assignments = assignments
