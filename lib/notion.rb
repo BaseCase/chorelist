@@ -1,12 +1,47 @@
-require 'chore'
+require 'httparty'
+require_relative './chore'
+
 
 class Notion
+  NOTION_API_SECRET = ENV.fetch('NOTION_API_SECRET', 'test')
+  CHORES_DB_ID = ENV.fetch('CHORES_DATABASE_ID', 'test')
+  ASSIGNMENTS_DB_ID = ENV.fetch('ASSIGNMENTS_DATABASE_ID', 'test')
+  API_BASE_URL = "https://api.notion.com/v1"
+
+  def self.headers
+    {
+      'Authorization' => "Bearer #{NOTION_API_SECRET}",
+      'Notion-Version' => '2022-02-22',
+      'Content-Type' => 'application/json',
+    }
+  end
+
   def self.fetch_chores_data
-    # API call goes here
+    response = HTTParty.post(
+      "#{API_BASE_URL}/databases/#{CHORES_DB_ID}/query",
+      headers: self.headers,
+      body: { page_size: 100 }.to_json
+    )
+
+    JSON.parse(response.body, symbolize_names: true)
   end
 
   def self.fetch_assignments_data
-    # API call goes here
+    response = HTTParty.post(
+      "#{API_BASE_URL}/databases/#{ASSIGNMENTS_DB_ID}/query",
+      headers: self.headers,
+      body: {
+        page_size: 100,
+        sorts: [
+          {
+            property: "Due",
+            direction: "descending"
+          }
+        ]
+      }.to_json
+    )
+
+    JSON.parse(response.body, symbolize_names: true)
   end
 
   def self.create_assignment(assignment_json)
@@ -31,6 +66,7 @@ class Notion
           done: asn_json.dig(:properties, :Done, :checkbox)
         )
       }
+      # TODO: chore name!
       Chore.new(
         id: chore_id,
         frequency: row.dig(:properties, :Frequency, :select, :name).to_sym,
@@ -42,16 +78,15 @@ class Notion
 
   def self.log_intent_for_assignment_generation(chores)
     chores.each do |chore|
-      print "Chore: #{chore.name}"
-      print "Due on #{chore.latest_assignment.due_date}"
-      print "Assigned to #{chore.latest_assignment.person}"
+      puts "Chore: #{chore.name}"
+      puts "#{chore.latest_assignment.person} to do by #{chore.latest_assignment.due_date}."
       if chore.latest_assignment.done
         next_assignment = chore.next_assignment
-        print "Next due on #{next_assignment.due_date}"
-        print "Assigned to #{next_assignment.person}"
+        puts "Done! Next due on #{next_assignment.due_date} by #{next_assignment.person}."
       else
-        print "Not done yet, so retaining existing assignment."
+        puts "Not done yet, so retaining existing assignment."
       end
+      puts
     end
   end
 
