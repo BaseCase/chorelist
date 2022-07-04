@@ -64,5 +64,10 @@ RSpec.describe Chore do
 
       expect(chore.next_assignment).to be_nil
     end
+
+    it "sets the title to 'chore name: assignee'" do
+      chore = Chore.new(assignees: ["Elayne"], name: "snuggle kitty")
+      expect(chore.next_assignment.title).to eq "snuggle kitty: Elayne"
+    end
   end
 end

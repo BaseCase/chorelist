@@ -7,7 +7,8 @@ RSpec.describe Assignment do
         person: "Casey",
         due_date: Date.parse('2022-06-02'),
         chore_id: "12345",
-        done: false
+        done: false,
+        title: "snuggle kitty: Elayne"
       )
       expect(assignment.as_notion_hash).to eq(
         {
@@ -19,6 +20,11 @@ RSpec.describe Assignment do
             ]
           },
           "Done" => { "checkbox" => false },
+          "Title" => {
+            "title" => [
+              { "type" => "text", "text" => { "content" => "snuggle kitty: Elayne" }}
+            ]
+          },
         }
       )
     end

@@ -1,4 +1,4 @@
-Assignment = Struct.new(:person, :due_date, :chore_id, :done, keyword_init: true) do
+Assignment = Struct.new(:person, :due_date, :chore_id, :done, :title, keyword_init: true) do
   def as_notion_hash
     {
       "Chore" => { "relation" => [{ "id" => chore_id }]},
@@ -9,6 +9,11 @@ Assignment = Struct.new(:person, :due_date, :chore_id, :done, keyword_init: true
         ]
       },
       "Done" => { "checkbox" => done },
+      "Title" => {
+        "title" => [
+          { "type" => "text", "text" => { "content" => title }}
+        ]
+      },
     }
   end
 end

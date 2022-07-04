@@ -48,7 +48,8 @@ class Chore
       person: next_person,
       due_date: next_due,
       done: false,
-      chore_id: id
+      chore_id: id,
+      title: "#{name}: #{next_person}"
     )
   end
 
