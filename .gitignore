@@ -2,3 +2,4 @@ vendor/
 function.zip
 .projectile
 env.secret
+.DS_Store
